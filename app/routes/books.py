@@ -79,21 +79,21 @@ class BookView(MethodView):
     def update(pk):
         data = request.form
      
-        if data['name'] is not '':
+        if data['name'] not in '':
             Book.query.filter(Book.id == pk).update({'name': data['name']})
             db.session.commit()
-        if data['summary'] is not '':
+        if data['summary'] not in '':
             Book.query.filter(Book.id == pk).update({'summary': data['summary']})
             db.session.commit()
-
-        if data['author'] is not '':
+        if data['author'] not in '':
             for relationship in AuthorBook.query.filter(AuthorBook.book_id == pk).all():
                 AuthorBook.query.filter(AuthorBook.id == relationship.id).delete()
             for authors in data['author']:
-                if authors is not '':
+                if authors not in '':
                     details = Book.query.order_by(Book.id.desc()).first()
                     db.session.add(AuthorBook(author_id=authors, book_id=details.id))
                     db.session.commit()
+
 
     @staticmethod
     def pagination():
