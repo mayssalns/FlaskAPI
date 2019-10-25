@@ -1,0 +1,9 @@
+sqlalchemy
+psycopg2
+Flask
+Flask-RESTful
+Flask-SQLAlchemy
+Flask-Migrate
+redis
+flask-cors
+Werkzeug
