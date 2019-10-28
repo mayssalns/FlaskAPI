@@ -6,8 +6,9 @@ from flask import request, jsonify, Blueprint, Response
 from flask.views import MethodView
 from app import db, app
 from app.models.author import Author
-from app.models.book import AuthorBook
+from app.models.book import AuthorBook, Book
 from app.serializers.AuthorSerializer import AuthorSerializer
+from app.serializers.BookSerializer import BookSerializer
 
 
 
@@ -16,14 +17,18 @@ author = Blueprint('Author', __name__)
 
 class AuthorView(MethodView):
 
+    @author.route('/v1/author/<int:pk>/books/')
+    def get_book_detail(pk):
+        book = []
+        for book_author in AuthorBook.query.filter(AuthorBook.author_id==pk).all():
+            book.append({
+                'id': book_author.book_id,
+                'name': book_author.book.name,
+                'summary': book_author.book.summary
+            })
+        return jsonify(book)
+    
 
-    def get_author_detail(pk):
-        author = []
-        for author_book in AuthorBook.query.filter_by(book_id=pk).all():
-            author.append({'id': author_book.author_id, 'name': author_book.author.name})
-        response = author
-        return jsonify(response)
-   
 
     @author.route('/v1/author/<int:pk>/',  methods=['GET', 'PUT', 'DELETE'])
     @author.route('/v1/author/<int:pk>',  methods=['GET', 'PUT', 'DELETE'])

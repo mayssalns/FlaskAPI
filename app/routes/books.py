@@ -33,8 +33,8 @@ class BookView(MethodView):
                 res = BookView().pagination()
             else:
                 res = BookSerializer.get_by_id(Book.query.filter_by(id=pk).all(), AuthorBook)
-
             return jsonify(res)
+
         elif request.method == 'POST':
             try:
                 BookView().post()
