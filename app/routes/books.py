@@ -15,7 +15,10 @@ class BookView(MethodView):
     def get_author_detail(pk):
         author = []
         for author_book in AuthorBook.query.filter_by(book_id=pk).all():
-            author.append({'id': author_book.author_id, 'name': author_book.author.name})
+            author.append({
+                'id': author_book.author_id, 
+                'name': author_book.author.name
+            })
         res = author
         return jsonify(res)
 

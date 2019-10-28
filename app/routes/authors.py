@@ -18,7 +18,7 @@ author = Blueprint('Author', __name__)
 class AuthorView(MethodView):
 
     @author.route('/v1/author/<int:pk>/books/')
-    def get_book_detail(pk):
+    def get_author_books(pk):
         book = []
         for book_author in AuthorBook.query.filter(AuthorBook.author_id==pk).all():
             book.append({
@@ -27,8 +27,6 @@ class AuthorView(MethodView):
                 'summary': book_author.book.summary
             })
         return jsonify(book)
-    
-
 
     @author.route('/v1/author/<int:pk>/',  methods=['GET', 'PUT', 'DELETE'])
     @author.route('/v1/author/<int:pk>',  methods=['GET', 'PUT', 'DELETE'])
