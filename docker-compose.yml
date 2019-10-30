@@ -4,14 +4,15 @@ services:
   db:
     image: postgres
     environment:
-      POSTGRES_DB: 'Borges'
+      POSTGRES_DB: 'bookstore'
       POSTGRES_USER: 'admin'
       POSTGRES_PASSWORD : 'admin'
     ports:
       - "5432:5432"
+    restart: always
   app:
     build: .
-    command: python run.py db init
+    command: python run.py db init python run.py db migrate
     volumes:
       - .:/code
     ports:

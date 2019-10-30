@@ -6,10 +6,10 @@ from flask import request, jsonify, Blueprint, Response
 from flask.views import MethodView
 from app import db, app
 from app.models.author import Author
+from sqlalchemy import desc
 from app.models.book import AuthorBook, Book
 from app.serializers.AuthorSerializer import AuthorSerializer
 from app.serializers.BookSerializer import BookSerializer
-
 
 
 author = Blueprint('Author', __name__)
@@ -33,17 +33,17 @@ class AuthorView(MethodView):
     @author.route('/v1/author/', methods=['GET', 'POST'])
     @author.route('/v1/author', methods=['GET', 'POST'])
     def index(pk=None):
-        if request.method == 'GET': #OK
+        if request.method == 'GET':
+            data = request.get_json()
             if not pk:
                 if request.args.get('name') is not None:
-                    authors = Author.query.filter(Author.name.ilike("%"+request.args.get('name')+"%")).order_by(Author.name).all()
+                    authors = Author.query.filter(Author.name.like('%'+request.args.get('name')+'%')).all()
                 else:
                     authors = Author.query.order_by(Author.name).all()
-                response = AuthorView().paginate()
-
+                res = AuthorView().paginate()
             else:
-                response = AuthorSerializer().get_by_id(Author.query.filter_by(id=pk).first())
-            return jsonify(response)
+                res = AuthorSerializer().get_by_id(Author.query.filter_by(id=pk).first())
+            return jsonify(res)
 
 
         elif request.method == 'POST':
@@ -94,7 +94,7 @@ class AuthorView(MethodView):
     def paginate():
         previous = None
         next = None
-        total = len(Author.query.order_by(Author.name).all())
+        total = len(Author.query.all())
         count_pages = math.ceil(total / 5)
         if request.args.get('page') is None:
             page = 1
@@ -114,8 +114,10 @@ class AuthorView(MethodView):
         results = []
         for detail_author in authors:
             results.append({
-                'id': detail_author.id,
-                'name': detail_author.name
+                'name': detail_author.name,
+                'id': detail_author.id
             })
             response['results'] = results
         return response
+
+       

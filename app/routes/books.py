@@ -30,12 +30,17 @@ class BookView(MethodView):
         if request.method == 'GET':
             if not pk:
                 if request.args.get('name') is not None:
-                    books = Book.query.filter(Book.name.ilike("%"+data['name']+"%")).order_by(Book.name).all()
+                    print(">>>>>>>>>>>>>>>>> IS NOT NONE")
+                    books = Book.query.filter(Book.name.contains("%"+request.args.get('name')+"%")).all
                 else:
                     books = Book.query.order_by(Book.name).all()
-                res = BookView().pagination()
+                    print("Caiu aqui")
+                res = BookView().paginate()
+                print('>>>>>>>>> RES', res)
             else:
                 res = BookSerializer.get_by_id(Book.query.filter_by(id=pk).all(), AuthorBook)
+                print('>>>>>>>>>>>. ELSE')
+                print('>>>>>>>>>>', res)
             return jsonify(res)
 
         elif request.method == 'POST':
@@ -99,7 +104,7 @@ class BookView(MethodView):
 
 
     @staticmethod
-    def pagination():
+    def paginate():
         previous = None
         next = None
         total = len(Book.query.order_by(Book.name).all())
